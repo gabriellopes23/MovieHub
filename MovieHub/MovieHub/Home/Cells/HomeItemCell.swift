@@ -9,14 +9,31 @@ class HomeItemCell: UICollectionViewCell {
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         image.translatesAutoresizingMaskIntoConstraints = false
+        image.layer.cornerRadius = 12
         return image
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 28, weight: .semibold)
-        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
+        label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let starImage: UIImageView = {
+        let image = UIImageView()
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.clipsToBounds = true
+        image.tintColor = .systemYellow
+        return image
+    }()
+    
+    private let scoreLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 18, weight: .bold)
+        label.textColor = .secondaryLabel
         return label
     }()
     
@@ -32,6 +49,8 @@ class HomeItemCell: UICollectionViewCell {
     private func setupViews() {
         contentView.addSubview(imageView)
         contentView.addSubview(titleLabel)
+        contentView.addSubview(starImage)
+        contentView.addSubview(scoreLabel)
         
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -42,17 +61,26 @@ class HomeItemCell: UICollectionViewCell {
             titleLabel.topAnchor.constraint(equalToSystemSpacingBelow: imageView.bottomAnchor, multiplier: 1),
             titleLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: contentView.leadingAnchor, multiplier: 1),
             contentView.trailingAnchor.constraint(equalToSystemSpacingAfter: titleLabel.trailingAnchor, multiplier: 1),
+            
+            starImage.topAnchor.constraint(equalToSystemSpacingBelow: titleLabel.bottomAnchor, multiplier: 1),
+            starImage.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            
+            scoreLabel.topAnchor.constraint(equalToSystemSpacingBelow: titleLabel.bottomAnchor, multiplier: 1),
+            scoreLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: starImage.trailingAnchor, multiplier: 1)
         ])
     }
     
     func configure(with item: CustomCellModel) {
         titleLabel.text = item.title
         imageView.image = UIImage(named: item.image)
+        starImage.image = UIImage(systemName: "star.fill")
+        scoreLabel.text = item.score
     }
 }
 
 struct CustomCellModel {
     let image: String
     let title: String
+    let score: String
 }
 

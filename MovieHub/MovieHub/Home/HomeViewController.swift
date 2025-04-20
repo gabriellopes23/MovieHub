@@ -4,15 +4,16 @@ import UIKit
 class HomeViewController: UIViewController {
     
     private let items: [CustomCellModel] = [
-        CustomCellModel(image: "filme", title: "Filme1"),
-        CustomCellModel(image: "filme", title: "Filme2"),
-        CustomCellModel(image: "filme", title: "Filme3"),
-        CustomCellModel(image: "filme", title: "Filme4"),
-        CustomCellModel(image: "filme", title: "Filme5"),
-        CustomCellModel(image: "filme", title: "Filme6"),
+        CustomCellModel(image: "filme", title: "Filme1", score: "4.3"),
+        CustomCellModel(image: "filme", title: "Filme2", score: "4.3"),
+        CustomCellModel(image: "filme", title: "Filme3", score: "4.3"),
+        CustomCellModel(image: "filme", title: "Filme4", score: "4.3"),
+        CustomCellModel(image: "filme", title: "Filme5", score: "4.3"),
+        CustomCellModel(image: "filme", title: "Filme6", score: "4.3"),
     ]
     
     let homeTitleLabel = UILabel()
+    let subtitleLable = UILabel()
     var collectionView: UICollectionView!
     
     override func viewDidLoad() {
@@ -25,20 +26,27 @@ class HomeViewController: UIViewController {
 // MARK: - Extensions
 extension HomeViewController {
     func setup() {
-        setupHomeTitleLabel()
+        setupLabels()
         setupCollectionView()
     }
     
-    func setupHomeTitleLabel() {
+    func setupLabels() {
         homeTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         homeTitleLabel.text = "Home"
-        homeTitleLabel.font = .systemFont(ofSize: 36, weight: .bold)
+        homeTitleLabel.font = .systemFont(ofSize: 39, weight: .bold)
+        
+        subtitleLable.translatesAutoresizingMaskIntoConstraints = false
+        subtitleLable.text = "Popular Movies"
+        subtitleLable.font = .systemFont(ofSize: 28, weight: .bold)
         
         view.addSubview(homeTitleLabel)
+        view.addSubview(subtitleLable)
         
         NSLayoutConstraint.activate([
             homeTitleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            homeTitleLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: view.leadingAnchor, multiplier: 2)
+            homeTitleLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: view.leadingAnchor, multiplier: 2),
+            subtitleLable.topAnchor.constraint(equalToSystemSpacingBelow: homeTitleLabel.bottomAnchor, multiplier: 4),
+            subtitleLable.leadingAnchor.constraint(equalTo: homeTitleLabel.leadingAnchor)
             ])
     }
     
@@ -59,7 +67,7 @@ extension HomeViewController {
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: homeTitleLabel.bottomAnchor, constant: 8),
+            collectionView.topAnchor.constraint(equalTo: subtitleLable.bottomAnchor, constant: 8),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
