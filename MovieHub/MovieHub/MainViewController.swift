@@ -34,11 +34,6 @@ class MainViewController: UITabBarController {
 
 
 // MARK: - Classes Temporárias
-class SearchViewController: UIViewController {
-    override func viewDidLoad() {
-    }
-}
-
 class FavoriteViewController: UIViewController {
     override func viewDidLoad() {
 

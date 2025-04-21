@@ -61,6 +61,7 @@ extension HomeViewController {
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(HomeItemCell.self, forCellWithReuseIdentifier: HomeItemCell.reuseID)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 70, right: 0)
         collectionView.dataSource = self
         collectionView.delegate = self
         
