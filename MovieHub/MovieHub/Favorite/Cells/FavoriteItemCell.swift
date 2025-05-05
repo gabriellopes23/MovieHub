@@ -1,24 +1,24 @@
 
 import UIKit
 
-class SearchItemCell: UICollectionViewCell {
+class FavoriteItemCell: UICollectionViewCell {
     
-    static let reuseID = "SearchItemCell"
+    static let reusedID = "FavoriteItemCell"
     
     private let imageView: UIImageView = {
         let image = UIImageView()
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.contentMode = .scaleAspectFit
+        image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
-        image.layer.cornerRadius = 10
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.layer.cornerRadius = 12
         return image
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
         label.textColor = .label
-        label.font = .systemFont(ofSize: 24, weight: .semibold)
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -33,30 +33,31 @@ class SearchItemCell: UICollectionViewCell {
     }
 }
 
-extension SearchItemCell {
+extension FavoriteItemCell {
     func setupViews() {
         contentView.addSubview(imageView)
         contentView.addSubview(titleLabel)
         
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageView.topAnchor.constraint(equalToSystemSpacingBelow: contentView.topAnchor, multiplier: 1),
             imageView.leadingAnchor.constraint(equalToSystemSpacingAfter: contentView.leadingAnchor, multiplier: 1),
             trailingAnchor.constraint(equalToSystemSpacingAfter: imageView.trailingAnchor, multiplier: 1),
             imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
             titleLabel.topAnchor.constraint(equalToSystemSpacingBelow: imageView.bottomAnchor, multiplier: 1),
-            titleLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: imageView.leadingAnchor, multiplier: 1),
-            trailingAnchor.constraint(equalToSystemSpacingAfter: titleLabel.trailingAnchor, multiplier: 1),
+            titleLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+            trailingAnchor.constraint(equalToSystemSpacingAfter: titleLabel.trailingAnchor, multiplier: 1)
         ])
     }
     
-    func configure(with item: SearchCellModel) {
-        imageView.image = UIImage(named: item.image)
+    func configure(with item: FavoriteCellModel) {
+        imageView.image = UIImage(named: item.imageView)
         titleLabel.text = item.title
     }
 }
 
-struct SearchCellModel {
-    let image: String
+struct FavoriteCellModel {
+    let imageView: String
     let title: String
 }
+

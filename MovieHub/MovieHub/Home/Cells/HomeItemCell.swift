@@ -2,6 +2,13 @@
 import UIKit
 
 class HomeItemCell: UICollectionViewCell {
+    
+    struct CustomCellModel {
+        let image: String
+        let title: String
+        let score: String
+    }
+    
     static let reuseID = "HomeItemCell"
     
     private let imageView: UIImageView = {
@@ -72,15 +79,17 @@ class HomeItemCell: UICollectionViewCell {
     
     func configure(with item: CustomCellModel) {
         titleLabel.text = item.title
-        imageView.image = UIImage(named: item.image)
         starImage.image = UIImage(systemName: "star.fill")
-        scoreLabel.text = item.score
+        scoreLabel.text = "\(item.score)"
+        
+        if let url = URL(string: item.image) {
+            URLSession.shared.dataTask(with: url) { data,_,_ in
+                if let data = data {
+                    DispatchQueue.main.async {
+                        self.imageView.image = UIImage(data: data)
+                    }
+                }
+            }.resume()
+        }
     }
 }
-
-struct CustomCellModel {
-    let image: String
-    let title: String
-    let score: String
-}
-

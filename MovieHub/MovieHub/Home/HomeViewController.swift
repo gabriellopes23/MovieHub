@@ -3,14 +3,11 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    private let items: [CustomCellModel] = [
-        CustomCellModel(image: "filme", title: "Filme1", score: "4.3"),
-        CustomCellModel(image: "filme", title: "Filme2", score: "4.3"),
-        CustomCellModel(image: "filme", title: "Filme3", score: "4.3"),
-        CustomCellModel(image: "filme", title: "Filme4", score: "4.3"),
-        CustomCellModel(image: "filme", title: "Filme5", score: "4.3"),
-        CustomCellModel(image: "filme", title: "Filme6", score: "4.3"),
-    ]
+    // Request Model
+    var filmes: [FilmeModel] = []
+    
+    // View Models
+    var homeItemCell: [HomeItemCell.CustomCellModel] = []
     
     let homeTitleLabel = UILabel()
     let subtitleLable = UILabel()
@@ -28,6 +25,7 @@ extension HomeViewController {
     func setup() {
         setupLabels()
         setupCollectionView()
+        fetchDataAndLoadViews()
     }
     
     func setupLabels() {
@@ -79,7 +77,7 @@ extension HomeViewController {
 // MARK: - UICollectionViewDataSource
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return items.count
+        return homeItemCell.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -87,7 +85,9 @@ extension HomeViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.configure(with: items[indexPath.item])
+        let filmes = homeItemCell[indexPath.row]
+        cell.configure(with: filmes)
+        
         return cell
     }
     
@@ -98,5 +98,31 @@ extension HomeViewController: UICollectionViewDataSource {
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(indexPath.item)
+    }
+}
+
+// MARK: - Networking
+extension HomeViewController {
+    private func fetchDataAndLoadViews() {
+        
+        fetchFilme { result in
+            switch result {
+            case .success(let filmes):
+                self.filmes = filmes
+                self.configureCollectionCells(with: filmes)
+                self.collectionView.reloadData()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func configureCollectionCells(with filmes: [FilmeModel]) {
+        let baseImageURL = "https://image.tmdb.org/t/p/w500"
+        
+        homeItemCell = filmes.map {
+            let fullImageURL = baseImageURL + ($0.posterPath ?? "")
+            return HomeItemCell.CustomCellModel(image: fullImageURL, title: $0.title, score: "\($0.voteAverage)")
+        }
     }
 }
