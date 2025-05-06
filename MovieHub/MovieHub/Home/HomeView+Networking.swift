@@ -27,10 +27,10 @@ struct FilmeModel: Codable {
 }
 
 extension HomeViewController {
-    func fetchFilme(completion: @escaping(Result<[FilmeModel],NetworkError>) -> Void) {
+    func fetchFilme(page: Int, completion: @escaping(Result<[FilmeModel],NetworkError>) -> Void) {
         
         let apiKey = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwYjc4Mjk3NTEzNjk4MDI1N2JiMTM0NTMyZDlhOGFjNSIsIm5iZiI6MS43MTg3MzQ1MzI5NDIwMDAyZSs5LCJzdWIiOiI2NjcxY2VjNDVlNGZiZTQwYjQ5OWUyNjIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.RCX4Ap-ETCkgMC7oRSi4WyseSVnMe2JlqL2_3WCcTqs"
-        let baseURL = "https://api.themoviedb.org/3/movie/popular"
+        let baseURL = "https://api.themoviedb.org/3/movie/popular?page=\(page)"
         
         guard let url = URL(string: baseURL) else {
             completion(.failure(.serverError))
@@ -54,10 +54,8 @@ extension HomeViewController {
                     
                     let filmes = try decoder.decode(FilmeResponse.self, from: data)
                     completion(.success(filmes.results))
-                    print("Successo")
                 } catch {
                     completion(.failure(.decodingError))
-                    print("Error de dados")
                 }
             }
         }.resume()

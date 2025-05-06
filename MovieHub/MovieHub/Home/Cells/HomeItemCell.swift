@@ -3,7 +3,7 @@ import UIKit
 
 class HomeItemCell: UICollectionViewCell {
     
-    struct CustomCellModel {
+    struct ViewModel {
         let image: String
         let title: String
         let score: String
@@ -77,7 +77,7 @@ class HomeItemCell: UICollectionViewCell {
         ])
     }
     
-    func configure(with item: CustomCellModel) {
+    func configure(with item: ViewModel) {
         titleLabel.text = item.title
         starImage.image = UIImage(systemName: "star.fill")
         scoreLabel.text = "\(item.score)"

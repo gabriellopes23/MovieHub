@@ -7,11 +7,13 @@ class HomeViewController: UIViewController {
     var filmes: [FilmeModel] = []
     
     // View Models
-    var homeItemCell: [HomeItemCell.CustomCellModel] = []
+    var homeItemCell: [HomeItemCell.ViewModel] = []
     
+    // Components
     let homeTitleLabel = UILabel()
     let subtitleLable = UILabel()
     var collectionView: UICollectionView!
+    var refreshControl = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,10 +27,11 @@ extension HomeViewController {
     func setup() {
         setupLabels()
         setupCollectionView()
-        fetchDataAndLoadViews()
+        setupRefreshControl()
+        fetchData()
     }
     
-    func setupLabels() {
+    private func setupLabels() {
         homeTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         homeTitleLabel.text = "Home"
         homeTitleLabel.font = .systemFont(ofSize: 39, weight: .bold)
@@ -45,10 +48,9 @@ extension HomeViewController {
             homeTitleLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: view.leadingAnchor, multiplier: 2),
             subtitleLable.topAnchor.constraint(equalToSystemSpacingBelow: homeTitleLabel.bottomAnchor, multiplier: 4),
             subtitleLable.leadingAnchor.constraint(equalTo: homeTitleLabel.leadingAnchor)
-            ])
+        ])
     }
-    
-    func setupCollectionView() {
+    private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.itemSize = CGSize(width: (view.bounds.width / 2) - 3, height: (view.bounds.height / 4) - 3)
@@ -71,6 +73,10 @@ extension HomeViewController {
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
+    }
+    private func setupRefreshControl() {
+        refreshControl.addTarget(self, action: #selector(refreshContent), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
     }
 }
 
@@ -103,17 +109,26 @@ extension HomeViewController: UICollectionViewDelegate {
 
 // MARK: - Networking
 extension HomeViewController {
-    private func fetchDataAndLoadViews() {
+    private func fetchData() {
+        let group = DispatchGroup()
         
-        fetchFilme { result in
+        let randomPages = Int.random(in: 0..<100)
+        
+        group.enter()
+        fetchFilme(page: randomPages) { result in
             switch result {
             case .success(let filmes):
                 self.filmes = filmes
                 self.configureCollectionCells(with: filmes)
-                self.collectionView.reloadData()
             case .failure(let error):
                 print(error.localizedDescription)
             }
+            group.leave()
+        }
+        
+        group.notify(queue: .main) {
+            self.collectionView.reloadData()
+            self.collectionView.refreshControl?.endRefreshing()
         }
     }
     
@@ -122,7 +137,14 @@ extension HomeViewController {
         
         homeItemCell = filmes.map {
             let fullImageURL = baseImageURL + ($0.posterPath ?? "")
-            return HomeItemCell.CustomCellModel(image: fullImageURL, title: $0.title, score: "\($0.voteAverage)")
+            return HomeItemCell.ViewModel(image: fullImageURL, title: $0.title, score: String(format: "%.1f", $0.voteAverage))
         }
+    }
+}
+
+// MARK: - Actions
+extension HomeViewController {
+    @objc func refreshContent() {
+        fetchData()
     }
 }
